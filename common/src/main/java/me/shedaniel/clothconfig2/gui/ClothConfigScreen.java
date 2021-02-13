@@ -22,10 +22,7 @@ package me.shedaniel.clothconfig2.gui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import me.shedaniel.clothconfig2.api.*;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
@@ -115,33 +112,6 @@ public class ClothConfigScreen extends AbstractTabbedConfigScreen {
     @Override
     public Map<Component, List<AbstractConfigEntry<?>>> getCategorizedEntries() {
         return categorizedEntries;
-    }
-    
-    @Override
-    public boolean isEdited() {
-        return super.isEdited();
-    }
-    
-    /**
-     * Override #isEdited please
-     */
-    @Deprecated
-    public void setEdited(boolean edited) {
-        super.setEdited(edited);
-    }
-    
-    /**
-     * Override #isEdited please
-     */
-    @Override
-    @Deprecated
-    public void setEdited(boolean edited, boolean requiresRestart) {
-        super.setEdited(edited, requiresRestart);
-    }
-    
-    @Override
-    public void saveAll(boolean openOtherScreens) {
-        super.saveAll(openOtherScreens);
     }
     
     @Override
@@ -310,12 +280,6 @@ public class ClothConfigScreen extends AbstractTabbedConfigScreen {
         super.render(matrices, mouseX, mouseY, delta);
     }
     
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public void queueTooltip(QueuedTooltip queuedTooltip) {
-        super.addTooltip(queuedTooltip);
-    }
-    
     private void drawTabsShades(PoseStack matrices, int lightColor, int darkColor) {
         drawTabsShades(matrices.last().pose(), lightColor, darkColor);
     }
@@ -328,13 +292,13 @@ public class ClothConfigScreen extends AbstractTabbedConfigScreen {
         RenderSystem.disableTexture();
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(7, DefaultVertexFormat.POSITION_TEX_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         buffer.vertex(matrix, tabsBounds.getMinX() + 20, tabsBounds.getMinY() + 4, 0.0F).uv(0, 1f).color(0, 0, 0, lightColor).endVertex();
         buffer.vertex(matrix, tabsBounds.getMaxX() - 20, tabsBounds.getMinY() + 4, 0.0F).uv(1f, 1f).color(0, 0, 0, lightColor).endVertex();
         buffer.vertex(matrix, tabsBounds.getMaxX() - 20, tabsBounds.getMinY(), 0.0F).uv(1f, 0).color(0, 0, 0, darkColor).endVertex();
         buffer.vertex(matrix, tabsBounds.getMinX() + 20, tabsBounds.getMinY(), 0.0F).uv(0, 0).color(0, 0, 0, darkColor).endVertex();
         tessellator.end();
-        buffer.begin(7, DefaultVertexFormat.POSITION_TEX_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         buffer.vertex(matrix, tabsBounds.getMinX() + 20, tabsBounds.getMaxY(), 0.0F).uv(0, 1f).color(0, 0, 0, darkColor).endVertex();
         buffer.vertex(matrix, tabsBounds.getMaxX() - 20, tabsBounds.getMaxY(), 0.0F).uv(1f, 1f).color(0, 0, 0, darkColor).endVertex();
         buffer.vertex(matrix, tabsBounds.getMaxX() - 20, tabsBounds.getMaxY() - 4, 0.0F).uv(1f, 0).color(0, 0, 0, lightColor).endVertex();
@@ -433,7 +397,7 @@ public class ClothConfigScreen extends AbstractTabbedConfigScreen {
             RenderSystem.shadeModel(7425);
             Tesselator tessellator = Tesselator.getInstance();
             BufferBuilder bufferBuilder = tessellator.getBuilder();
-            bufferBuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             fillGradient(matrices.last().pose(), bufferBuilder, xStart, yStart, xEnd, yEnd, this.getBlitOffset(), colorStart, colorEnd);
             tessellator.end();
             RenderSystem.shadeModel(7424);
